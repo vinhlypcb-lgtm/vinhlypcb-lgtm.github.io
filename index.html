@@ -1,96 +1,216 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Phòng thí nghiệm ảo - Vật lý đại cương</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background:#0b1b2e; color:#fff; margin:0; padding:24px; }
-    h1 { text-align:center; margin-bottom:4px; }
-    .sub { text-align:center; color:#9db8d3; margin-bottom:20px; }
-    .search { display:block; margin:0 auto 10px; width:100%; max-width:420px; padding:10px 14px;
-              border-radius:10px; border:1px solid #1f5a8f; background:#12304f; color:#fff; font-size:15px; }
-    h2 { max-width:1100px; margin:28px auto 8px; font-size:18px; color:#5cc8ff; border-bottom:1px solid #1f5a8f; padding-bottom:6px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; max-width:1100px; margin:0 auto; }
-    a.card { background:#12304f; border:1px solid #1f5a8f; border-radius:12px; padding:16px 18px;
-             color:#fff; text-decoration:none; display:block; }
-    a.card:hover { background:#1a4570; }
-    a.card b { color:#5cc8ff; display:block; margin-bottom:4px; }
-    .hidden { display:none !important; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phòng thí nghiệm ảo - Vật lý đại cương</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07131f;--panel:#0e2236;--line:#1d3b57;--text:#e8f1f8;--muted:#8fa9bf;--c:#35d0ff}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:"Be Vietnam Pro",system-ui,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--c);outline-offset:3px}
+
+/* Phần đầu trang */
+.hero{position:relative;min-height:440px;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 8%,rgba(7,19,31,.55) 55%,rgba(7,19,31,0))}
+.hero-in{position:relative;z-index:1;max-width:1120px;width:100%;margin:0 auto;padding:56px 24px}
+.hero h1{font-size:clamp(34px,6vw,64px);font-weight:800;line-height:1.08;letter-spacing:-.02em;max-width:640px}
+.hero p{margin-top:16px;color:var(--muted);max-width:520px;font-size:17px}
+.hero small{display:block;margin-top:6px;color:var(--c);font-weight:500}
+.actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{padding:12px 22px;border-radius:999px;font-weight:600;border:1px solid var(--line);background:rgba(14,34,54,.8)}
+.btn.main{background:var(--c);color:#04202e;border-color:var(--c)}
+.btn:hover{filter:brightness(1.12)}
+
+/* Thanh tìm kiếm + nhóm */
+.bar{position:sticky;top:0;z-index:5;background:rgba(7,19,31,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1120px;margin:0 auto;padding:12px 24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#q{flex:1;min-width:200px;padding:11px 16px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit}
+#q::placeholder{color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
+.chip.on{background:var(--panel);color:var(--text);border-color:var(--gc,var(--c))}
+
+main{max-width:1120px;margin:0 auto;padding:8px 24px 64px}
+section{margin-top:40px}
+section h2{display:flex;align-items:baseline;gap:12px;font-size:22px;font-weight:600;margin-bottom:16px}
+section h2 span{color:var(--muted);font-size:14px;font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{position:relative;display:flex;flex-direction:column;gap:6px;padding:18px 18px 16px 22px;border-radius:14px;background:var(--panel);border:1px solid var(--line);transition:transform .18s,border-color .18s}
+.card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--gc)}
+.card:hover{transform:translateY(-3px);border-color:var(--gc)}
+.card .no{font-size:30px;font-weight:800;color:var(--gc);line-height:1}
+.card .t{font-weight:500;font-size:16px}
+.card .go{margin-top:auto;padding-top:10px;color:var(--muted);font-size:13px}
+.card:hover .go{color:var(--text)}
+.empty{display:none;margin-top:48px;text-align:center;color:var(--muted)}
+.hidden{display:none!important}
+footer{border-top:1px solid var(--line);padding:28px 24px;text-align:center;color:var(--muted);font-size:14px}
+@media(max-width:640px){.hero::after{background:rgba(7,19,31,.7)}}
+</style>
 </head>
 <body>
-  <h1>Phòng thí nghiệm ảo - Vật lý đại cương</h1>
-  <div class="sub">Bộ môn Vật lý Công nghệ - Trường Đại học Công nghệ GTVT</div>
-  <input class="search" id="q" placeholder="Tìm bài thí nghiệm...">
-  <div id="app"></div>
 
-  <script>
-    const BASE = "https://vinhlypcb-lgtm.github.io/";
+<header class="hero">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="hero-in">
+    <h1>Phòng thí nghiệm ảo Vật lý đại cương</h1>
+    <p>Làm thí nghiệm ngay trên trình duyệt: điều chỉnh thông số, quan sát hiện tượng và ghi số liệu như ở phòng thực hành.
+      <small>Bộ môn Vật lý Công nghệ · Trường Đại học Công nghệ GTVT</small></p>
+    <div class="actions">
+      <a class="btn main" href="#bai">Chọn bài thí nghiệm</a>
+      <span class="btn" id="count"></span>
+    </div>
+  </div>
+</header>
 
-    // Mỗi dòng: [tên repo trên GitHub, số bài, tên hiển thị]
-    const groups = [
-      { name: "Nhóm 2 - Dụng cụ đo", items: [
-        ["Bai-2.1_Su_dung_thuoc_kep", "2.1", "Sử dụng thước kẹp"],
-        ["Bai-2.2_Su_dung_Panme", "2.2", "Sử dụng Panme"],
-        ["Bai-2.3_Su_dung_can_khoi_luong", "2.3", "Sử dụng cân khối lượng"]
-      ]},
-      { name: "Nhóm 3", items: [
-        ["Bai_3.1_Su_dung_Cau_ke", "3.1", "Sử dụng cầu kế"],
-        ["Bai_3.2-Xac-dinh-gia-toc-trong-truong", "3.2", "Xác định gia tốc trọng trường"]
-      ]},
-      { name: "Nhóm 4 - Chuyển động và va chạm", items: [
-        ["Bai_4.1_Chuyen_dong_thang_deu", "4.1", "Chuyển động thẳng đều"],
-        ["Bai_4.2_Chuyen_dong_nhanh_dan_deu", "4.2", "Chuyển động nhanh dần đều"],
-        ["Bai_4.3_Gia_toc_phu_thuoc_luc", "4.3", "Gia tốc phụ thuộc lực"],
-        ["Bai_4.4_Gia_toc_phu_thuoc_khoi_luong", "4.4", "Gia tốc phụ thuộc khối lượng"],
-        ["Bai_4.5_He_so_ma_sat", "4.5", "Hệ số ma sát"],
-        ["Bai_4.6_Va_cham_mem", "4.6", "Va chạm mềm"],
-        ["Bai_4.7_Va_cham_dan_hoi", "4.7", "Va chạm đàn hồi"]
-      ]},
-      { name: "Nhóm 5 - Chuyển động quay", items: [
-        ["Bai_5.2_Do_moment_xoan_D", "5.2", "Đo moment xoắn D"],
-        ["Bai_5.3.1_Thanh_dai_dong_chat", "5.3.1", "Thanh dài đồng chất"],
-        ["Bai_5.3.2_Cau_dac_dong_chat", "5.3.2", "Cầu đặc đồng chất"],
-        ["Bai_5.3.3_Dia_dac_dong_chat", "5.3.3", "Đĩa đặc đồng chất"],
-        ["Bai_5.3.4_Tru_dac_va_tru_rong", "5.3.4", "Trụ đặc và trụ rỗng"]
-      ]},
-      { name: "Nhóm 6 - Từ trường", items: [
-        ["Bai_6.1_Tu_truong_cuon_day", "6.1", "Từ trường cuộn dây"],
-        ["Bai_6.2_Tu_truong_hai_cuon_day", "6.2", "Từ trường hai cuộn dây"],
-        ["Bai_6.3_Tu_truong_Solenoid", "6.3", "Từ trường Solenoid"]
-      ]}
-    ];
+<div class="bar" id="bai">
+  <div class="bar-in">
+    <input id="q" type="search" placeholder="Tìm bài, ví dụ: ma sát, solenoid, va chạm..." aria-label="Tìm bài thí nghiệm">
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
 
-    const app = document.getElementById("app");
-    groups.forEach(g => {
-      const section = document.createElement("section");
-      section.innerHTML = "<h2>" + g.name + "</h2><div class='grid'></div>";
-      const grid = section.querySelector(".grid");
-      g.items.forEach(([repo, num, title]) => {
-        const a = document.createElement("a");
-        a.className = "card";
-        a.href = BASE + repo + "/";
-        a.target = "_blank";
-        a.innerHTML = "<b>Bài " + num + "</b>" + title;
-        grid.appendChild(a);
-      });
-      app.appendChild(section);
+<main id="app">
+  <p class="empty" id="empty">Không có bài nào khớp. Hãy thử từ khóa khác.</p>
+</main>
+
+<footer>Bộ môn Vật lý Công nghệ · Trường Đại học Công nghệ GTVT</footer>
+
+<script>
+const BASE="https://vinhlypcb-lgtm.github.io/";
+// [tên repo, số bài, tên hiển thị]
+const groups=[
+ {name:"Dụng cụ đo",desc:"Làm quen thước kẹp, Panme, cân",color:"#35d0ff",items:[
+  ["Bai-2.1_Su_dung_thuoc_kep","2.1","Sử dụng thước kẹp"],
+  ["Bai-2.2_Su_dung_Panme","2.2","Sử dụng Panme"],
+  ["Bai-2.3_Su_dung_can_khoi_luong","2.3","Sử dụng cân khối lượng"]]},
+ {name:"Cầu kế và gia tốc trọng trường",desc:"",color:"#7c9cff",items:[
+  ["Bai_3.1_Su_dung_Cau_ke","3.1","Sử dụng cầu kế"],
+  ["Bai_3.2-Xac-dinh-gia-toc-trong-truong","3.2","Xác định gia tốc trọng trường"]]},
+ {name:"Chuyển động và va chạm",desc:"Động học, động lực học, ma sát",color:"#4be0a8",items:[
+  ["Bai_4.1_Chuyen_dong_thang_deu","4.1","Chuyển động thẳng đều"],
+  ["Bai_4.2_Chuyen_dong_nhanh_dan_deu","4.2","Chuyển động nhanh dần đều"],
+  ["Bai_4.3_Gia_toc_phu_thuoc_luc","4.3","Gia tốc phụ thuộc lực"],
+  ["Bai_4.4_Gia_toc_phu_thuoc_khoi_luong","4.4","Gia tốc phụ thuộc khối lượng"],
+  ["Bai_4.5_He_so_ma_sat","4.5","Hệ số ma sát"],
+  ["Bai_4.6_Va_cham_mem","4.6","Va chạm mềm"],
+  ["Bai_4.7_Va_cham_dan_hoi","4.7","Va chạm đàn hồi"]]},
+ {name:"Chuyển động quay",desc:"Moment xoắn và moment quán tính",color:"#ffb454",items:[
+  ["Bai_5.2_Do_moment_xoan_D","5.2","Đo moment xoắn D"],
+  ["Bai_5.3.1_Thanh_dai_dong_chat","5.3.1","Thanh dài đồng chất"],
+  ["Bai_5.3.2_Cau_dac_dong_chat","5.3.2","Cầu đặc đồng chất"],
+  ["Bai_5.3.3_Dia_dac_dong_chat","5.3.3","Đĩa đặc đồng chất"],
+  ["Bai_5.3.4_Tru_dac_va_tru_rong","5.3.4","Trụ đặc và trụ rỗng"]]},
+ {name:"Từ trường",desc:"Đo từ trường bằng đầu dò Hall",color:"#ff6b8a",items:[
+  ["Bai_6.1_Tu_truong_cuon_day","6.1","Từ trường cuộn dây"],
+  ["Bai_6.2_Tu_truong_hai_cuon_day","6.2","Từ trường hai cuộn dây"],
+  ["Bai_6.3_Tu_truong_Solenoid","6.3","Từ trường Solenoid"]]}
+];
+
+const app=document.getElementById("app"),chips=document.getElementById("chips");
+let total=0;
+groups.forEach((g,i)=>{
+  total+=g.items.length;
+  const s=document.createElement("section");
+  s.dataset.g=i; s.style.setProperty("--gc",g.color);
+  s.innerHTML=`<h2>${g.name}<span>${g.desc}</span></h2><div class="grid"></div>`;
+  const grid=s.querySelector(".grid");
+  g.items.forEach(([repo,no,title])=>{
+    const a=document.createElement("a");
+    a.className="card"; a.href=BASE+repo+"/"; a.target="_blank"; a.rel="noopener";
+    a.innerHTML=`<div class="no">${no}</div><div class="t">${title}</div><div class="go">Mở thí nghiệm</div>`;
+    grid.appendChild(a);
+  });
+  app.insertBefore(s,document.getElementById("empty"));
+});
+document.getElementById("count").textContent=total+" bài thí nghiệm";
+
+// Nút lọc theo nhóm
+let active=-1;
+const mk=(label,idx,color)=>{
+  const b=document.createElement("button");
+  b.className="chip"+(idx===-1?" on":""); b.textContent=label;
+  if(color)b.style.setProperty("--gc",color);
+  b.onclick=()=>{active=idx;chips.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));b.classList.add("on");apply()};
+  chips.appendChild(b);
+};
+mk("Tất cả",-1);
+const shortNames=["Dụng cụ","Cầu kế","Chuyển động","Quay","Từ trường"];
+groups.forEach((g,i)=>mk(shortNames[i],i,g.color));
+
+function apply(){
+  const k=document.getElementById("q").value.toLowerCase().trim();
+  let shown=0;
+  document.querySelectorAll("section").forEach(sec=>{
+    const inGroup=active===-1||+sec.dataset.g===active;
+    let any=false;
+    sec.querySelectorAll(".card").forEach(c=>{
+      const ok=inGroup&&c.textContent.toLowerCase().includes(k);
+      c.classList.toggle("hidden",!ok); if(ok){any=true;shown++}
     });
+    sec.classList.toggle("hidden",!any);
+  });
+  document.getElementById("empty").style.display=shown?"none":"block";
+}
+document.getElementById("q").addEventListener("input",apply);
 
-    document.getElementById("q").addEventListener("input", e => {
-      const k = e.target.value.toLowerCase().trim();
-      document.querySelectorAll("section").forEach(sec => {
-        let any = false;
-        sec.querySelectorAll("a.card").forEach(c => {
-          const ok = c.textContent.toLowerCase().includes(k);
-          c.classList.toggle("hidden", !ok);
-          if (ok) any = true;
-        });
-        sec.classList.toggle("hidden", !any);
-      });
+// Hiệu ứng đường sức từ: các hạt chạy theo trường của lưỡng cực, chuột di chuyển cực Bắc
+(function(){
+  const cv=document.getElementById("field"),ctx=cv.getContext("2d");
+  let W,H,mx=null,my=null,parts=[];
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function size(){
+    const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
+    W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);
+    ctx.fillStyle="#07131f";ctx.fillRect(0,0,W,H);
+  }
+  function poles(){
+    const n=mx===null?{x:W*.68,y:H*.5}:{x:mx,y:my};
+    return [{x:n.x,y:n.y,q:1},{x:W*.9,y:H*.5,q:-1}];
+  }
+  function field(x,y,P){
+    let ex=0,ey=0;
+    P.forEach(p=>{const dx=x-p.x,dy=y-p.y,r2=dx*dx+dy*dy+60,r=Math.sqrt(r2);ex+=p.q*dx/(r2*r);ey+=p.q*dy/(r2*r)});
+    const m=Math.hypot(ex,ey)||1;return [ex/m,ey/m];
+  }
+  function spawn(P){
+    const p=P[0],a=Math.random()*6.283;
+    return {x:p.x+Math.cos(a)*8,y:p.y+Math.sin(a)*8,life:0};
+  }
+  function init(){size();const P=poles();parts=Array.from({length:Math.min(140,Math.floor(W/8))},()=>spawn(P))}
+  function step(){
+    const P=poles();
+    ctx.fillStyle="rgba(7,19,31,.07)";ctx.fillRect(0,0,W,H);
+    parts.forEach((p,i)=>{
+      const [fx,fy]=field(p.x,p.y,P),nx=p.x+fx*2.2,ny=p.y+fy*2.2;
+      ctx.strokeStyle="rgba(53,208,255,.55)";ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(nx,ny);ctx.stroke();
+      p.x=nx;p.y=ny;p.life++;
+      const d=Math.hypot(p.x-P[1].x,p.y-P[1].y);
+      if(d<10||p.life>600||p.x<-20||p.x>W+20||p.y<-20||p.y>H+20)parts[i]=spawn(P);
     });
-  </script>
+    [[P[0],"#ff6b8a"],[P[1],"#7c9cff"]].forEach(([p,c])=>{
+      ctx.fillStyle=c;ctx.beginPath();ctx.arc(p.x,p.y,6,0,6.283);ctx.fill();
+    });
+    requestAnimationFrame(step);
+  }
+  const hero=document.querySelector(".hero");
+  hero.addEventListener("mousemove",e=>{const r=cv.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top});
+  hero.addEventListener("mouseleave",()=>{mx=null});
+  addEventListener("resize",init);
+  init();
+  if(reduce){for(let i=0;i<500;i++){step.call&&0}
+    const P=poles();parts.forEach(p=>{for(let k=0;k<300;k++){const [fx,fy]=field(p.x,p.y,P);ctx.strokeStyle="rgba(53,208,255,.15)";ctx.beginPath();ctx.moveTo(p.x,p.y);p.x+=fx*2.2;p.y+=fy*2.2;ctx.lineTo(p.x,p.y);ctx.stroke()}});
+    P.forEach((p,i)=>{ctx.fillStyle=i?"#7c9cff":"#ff6b8a";ctx.beginPath();ctx.arc(p.x,p.y,6,0,6.283);ctx.fill()});
+  } else step();
+})();
+</script>
 </body>
 </html>
